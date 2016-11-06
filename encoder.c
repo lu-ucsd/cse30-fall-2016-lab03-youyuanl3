@@ -107,7 +107,7 @@ void textToBinary(FILE *in, FILE *out){
  */
 void binaryToCode(FILE *in, FILE *out, int index){
   /* implant each input character into a random char */
-  char random;
+  char randomchar;
   int ch;
 
   srand(1); //DO NOT REMOVE OR EDIT THIS LINE OF CODE
@@ -116,11 +116,11 @@ void binaryToCode(FILE *in, FILE *out, int index){
     return;
 
   while ((ch = fgetc(in)) != EOF) {  // traverse all input characters
-    random = rand() % 256;
+    randomchar = rand() % 256;
     if (ch == '0')
-      fputc(implantBit(random, 0, index), out);
+      fputc(implantBit(randomchar, 0, index), out);
     else
-      fputc(implantBit(random, 1, index), out);
+      fputc(implantBit(randomchar, 1, index), out);
   }
 }
 
@@ -137,17 +137,23 @@ void binaryToCode(FILE *in, FILE *out, int index){
  */
 void encodeFile(char* input, char* bin, char* output, int index){
   /* transfer an input file to an encoded file */
-  FILE * in = fopen(input, "a+");
-  FILE * binary = fopen(bin, "a+");
-  FILE * out = fopen(output, "a+");
+  FILE * in = fopen(input, "r");
+  FILE * binary;
+  FILE * out;
 
   if (in == NULL)  // invalid input
     return;
 
+  // get binary file from text file
+  binary = fopen(bin, "w");
   textToBinary(in, binary);
-  binaryToCode(binary, out, index);
-
   fclose(in);
+  fclose(binary);
+
+  // get code file from binary file
+  binary = fopen(bin,"r");
+  out = fopen(output, "w");
+  binaryToCode(binary, out, index);
   fclose(binary);
   fclose(out);
 }

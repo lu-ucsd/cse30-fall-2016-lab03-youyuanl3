@@ -91,13 +91,13 @@ void codeToBinary(FILE *in, FILE *out, int index){
  */
 void binaryToText(FILE *in, FILE *out){
   /* group 6 input characters and output the corresponding character */
-  int i, ch;
   char arr[6];
+  int i, ch;
 
   if (in == NULL)  // invalid input
     return;
 
-  while ((ch = fgetc(in)) != EOF) {
+  while ((ch = fgetc(in)) != EOF) {  // traverse all input characters
     arr[0] = ch;
     for (i = 1; i < 6; i++)
       arr[i] = fgetc(in);
@@ -119,16 +119,22 @@ void binaryToText(FILE *in, FILE *out){
 void decodeFile(char* input, char* bin, char* output, int index){
   /* decode the file to get the original message */
   FILE * in = fopen(input, "a+");
-  FILE * binary = fopen(bin, "a+");
-  FILE * out = fopen(output, "a+");
+  FILE * binary;
+  FILE * out;
 
   if (in == NULL)  // invalid input
     return;
 
+  // get binary file from code file
+  binary = fopen(bin, "w");
   codeToBinary(in, binary, index);
-  binaryToText(binary,  out);
-
   fclose(in);
+  fclose(binary);
+
+  // get text file from binary file
+  binary = fopen(bin, "r");
+  out = fopen(output, "w");
+  binaryToText(binary, out);
   fclose(binary);
   fclose(out);
 }

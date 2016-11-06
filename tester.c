@@ -10,5 +10,6 @@
 #include "decoder.h"
 
 int main(int argc, char *argv[]){
-    return 0;
+  decodeFile("code_astley_3.txt", "testbin.txt", "testtext.txt", 3);
+  return 0;
 }
