@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include "common.h"
 #include "decoder.h"
- 
+
 /**
  * Takes a char c and int index as input. 
  * Extracts the bit at the input index from the char c. The 0 index
@@ -19,7 +19,13 @@
  * @returns the value of the bit at index in c
  */
 int extractBit(char c, int index){
-    // TODO Implement me!
+  /* get the implanted bit from the char */
+  char mask = 1 << index;
+  int val = c & mask;  // get the implanted bit
+  if (val == 0)
+    return 0;
+  else
+    return 1;
 }
 
 /**
@@ -32,7 +38,15 @@ int extractBit(char c, int index){
  * @returns the corresponding character from MAPPING
  */
 char decodeChar(char *b){
-    // TODO Implement me!
+  /* get the character whose index is the input */
+  int index, i, pow;
+
+  // traverse the char array to get the index
+  for (index = 0, i = 0, pow = 32; i < 6; i++, pow /= 2)
+    if (b[i] == '1')
+      index += pow;
+
+  return MAPPING[index];
 }
 
 /**
@@ -48,9 +62,20 @@ char decodeChar(char *b){
  * @param in the input file handle to read from
  * @param out the output file to write the extracted ASCII binary into
  * @param index the index of the bit to extract from each char
-*/
+ */
 void codeToBinary(FILE *in, FILE *out, int index){
-    // TODO Implement me!
+  /* extract a bit from each input character and output them */
+  int ch;
+
+  if (in == NULL)  // invalid input
+    return;
+
+  while ((ch = fgetc(in)) != EOF) { // traverse all input characters
+    if (extractBit(ch, index) == 1)
+      fputc('1', out);
+    else
+      fputc('0', out);
+  }
 }
 
 /**
@@ -63,9 +88,21 @@ void codeToBinary(FILE *in, FILE *out, int index){
  *
  * @param in the input file, encoded as ASCII '1's and '0's
  * @Param out the decoded output file (ASCII)
-*/
+ */
 void binaryToText(FILE *in, FILE *out){
-    // TODO Implement me!
+  /* group 6 input characters and output the corresponding character */
+  int i, ch;
+  char arr[6];
+
+  if (in == NULL)  // invalid input
+    return;
+
+  while ((ch = fgetc(in)) != EOF) {
+    arr[0] = ch;
+    for (i = 1; i < 6; i++)
+      arr[i] = fgetc(in);
+    fputc(decodeChar(arr), out);
+  }
 }
 
 /**
@@ -80,5 +117,18 @@ void binaryToText(FILE *in, FILE *out){
  * @param index The index of the bit from which binary values should be extracted
  */
 void decodeFile(char* input, char* bin, char* output, int index){
-    // TODO Implement me!
+  /* decode the file to get the original message */
+  FILE * in = fopen(input, "a+");
+  FILE * binary = fopen(bin, "a+");
+  FILE * out = fopen(output, "a+");
+
+  if (in == NULL)  // invalid input
+    return;
+
+  codeToBinary(in, binary, index);
+  binaryToText(binary,  out);
+
+  fclose(in);
+  fclose(binary);
+  fclose(out);
 }

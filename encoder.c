@@ -20,7 +20,23 @@
  * @returns a six character array which encodes the index into ASCII binary
  */
 char* encodeChar(char c){
-    // TODO Implement me!
+  /* get the 6-digit binary code of the index of c in MAPPING */
+  int index, pow, i;
+  char * arr = malloc(6 * sizeof(char));
+
+  createReverseMapping();
+  index = REVERSE_MAPPING[(int)c];  // get the index of c in MAPPING
+
+  // get the 6-digit binary representation of index
+  for (i = 0, pow = 32; i < 6; i++, pow /= 2) {
+    if (index >= pow) {
+      index -= pow;
+      arr[i] = '1';
+    } else
+      arr[i] = '0';
+  }
+
+  return arr;
 }
 
 /**
@@ -35,7 +51,15 @@ char* encodeChar(char c){
  * @returns the char with bit b implanted into the input index
  */
 char implantBit(char c, int bit, int index){
-    // TODO Implement me!
+  /* implant the input bit at the input index of c */
+  char mask = 1 << index;
+  char val = c & (~mask);  // set the bit at the input index of c to be 0
+
+  // set the bit at the input index of c to be 1 if the input bit is 1
+  if (bit == 1)
+    val += mask;
+
+  return val;
 }
 
 /**
@@ -49,7 +73,20 @@ char implantBit(char c, int bit, int index){
  * @param out The output file, in ASCII encoded "binary"
  */
 void textToBinary(FILE *in, FILE *out){
-    // TODO Implement me!
+  /* get the 6-digit binary code of each input character and output then */
+  int ch, i;
+  char * arr;
+
+  if (in == NULL)  // invalid input
+    return;
+
+  while ((ch = fgetc(in)) != EOF) {  // traverse all input characters
+    arr = encodeChar(ch);
+    for (i = 0; i < 6; i++) {  // output 6-digit binary code
+      fputc(arr[i], out);
+    }
+    free(arr);
+  }
 }
 
 /**
@@ -69,8 +106,22 @@ void textToBinary(FILE *in, FILE *out){
  * @param index the index of the bit where binary values should be implanted (0 is LSB)
  */
 void binaryToCode(FILE *in, FILE *out, int index){
-    srand(1); //DO NOT REMOVE OR EDIT THIS LINE OF CODE
-    // TODO Implement me!
+  /* implant each input character into a random char */
+  char random;
+  int ch;
+
+  srand(1); //DO NOT REMOVE OR EDIT THIS LINE OF CODE
+
+  if (in == NULL)  // invalid input
+    return;
+
+  while ((ch = fgetc(in)) != EOF) {  // traverse all input characters
+    random = rand() % 256;
+    if (ch == '0')
+      fputc(implantBit(random, 0, index), out);
+    else
+      fputc(implantBit(random, 1, index), out);
+  }
 }
 
 /**
@@ -83,7 +134,20 @@ void binaryToCode(FILE *in, FILE *out, int index){
  * @param bin the path to the encoded ASCII binary output file
  * @param output the path to the encoded output file 
  * @param index The index of the bit where binary values should be implanted (0 is LSB)
-*/
+ */
 void encodeFile(char* input, char* bin, char* output, int index){
-    // TODO Implement me!
+  /* transfer an input file to an encoded file */
+  FILE * in = fopen(input, "a+");
+  FILE * binary = fopen(bin, "a+");
+  FILE * out = fopen(output, "a+");
+
+  if (in == NULL)  // invalid input
+    return;
+
+  textToBinary(in, binary);
+  binaryToCode(binary, out, index);
+
+  fclose(in);
+  fclose(binary);
+  fclose(out);
 }
