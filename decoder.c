@@ -20,7 +20,7 @@
  */
 int extractBit(char c, int index){
   /* get the implanted bit from the char */
-  char mask = 1 << index;
+  int mask = 1 << index;
   int val = c & mask;  // get the implanted bit
   if (val == 0)
     return 0;
