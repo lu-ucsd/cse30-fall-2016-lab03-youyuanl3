@@ -15,8 +15,7 @@ decodeChar:
     @ YOUR CODE GOES HERE
     @-----------------------
     
-    @ (your code)
-    @ put your return value in r0 here:
+
 
     @-----------------------
 return:

@@ -15,8 +15,9 @@ extractBit:
     @ YOUR CODE GOES HERE
     @-----------------------
     
-    @ (your code)
-    @ put your return value in r0 here:
+    LSR r0, r1
+    MOV r4, #1  @ make r4 a mask
+    AND r0, r0, r4  @ extract the bit
 
     @-----------------------
 return:

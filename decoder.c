@@ -118,7 +118,7 @@ void binaryToText(FILE *in, FILE *out){
  */
 void decodeFile(char* input, char* bin, char* output, int index){
   /* decode the file to get the original message */
-  FILE * in = fopen(input, "a+");
+  FILE * in = fopen(input, "r");
   FILE * binary;
   FILE * out;
 
