@@ -6,10 +6,15 @@
 #include <stdlib.h>
 #include <limits.h>
 #include "common.h"
-#include "encoder.h"
-#include "decoder.h"
+
+char decodeChar(char * b);
+void binaryToText(FILE * in, FILE * out);
 
 int main(int argc, char *argv[]){
-  decodeFile("code_astley_3.txt", "testbin.txt", "testtext.txt", 3);
+  FILE * in = fopen("bin_astley.txt", "r");
+  FILE * out = fopen("testtext.txt", "w");
+  binaryToText(in, out);
+  fclose(in);
+  fclose(out);
   return 0;
 }
